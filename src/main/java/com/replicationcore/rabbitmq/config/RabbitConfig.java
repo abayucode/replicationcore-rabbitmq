@@ -10,6 +10,7 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,19 +18,28 @@ import org.springframework.context.annotation.Configuration;
 @EnableRabbit
 public class RabbitConfig {
 
+    @Value("${replication-rabbit.queue}")
+    public String queue;
+
+    @Value("${replication-rabbit.exchange}")
+    public String exchange;
+
+    @Value("${replication-rabbit.routing-key}")
+    public String routingKey;
+
     @Bean
     public Queue queue() {
-        return new Queue("email", true);
+        return new Queue(queue, true);
     }
 
     @Bean
     public TopicExchange topicExchange() {
-        return new TopicExchange("notification");
+        return new TopicExchange(exchange);
     }
 
     @Bean
     public Binding binding(Queue queue, TopicExchange topicExchange) {
-        return BindingBuilder.bind(queue).to(topicExchange).with("my.routing.key");
+        return BindingBuilder.bind(queue).to(topicExchange).with(routingKey);
     }
 
     @Bean

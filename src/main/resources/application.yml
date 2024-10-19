@@ -5,9 +5,14 @@ spring:
   rabbitmq:
     host: localhost
     port: 5672
-    username: guest
-    password: guest
-    virtual-host: /
+    username: abayu_management
+    password: abayu_management
+    virtual-host: replication_core_rabbit
+
+replication-rabbit:
+  queue: replication_core_rabbit
+  exchange: product.updated.data
+  routing-key: product.updated.data
 
 server:
   port: 8082
